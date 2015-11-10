@@ -1,0 +1,6 @@
+function Bot () {
+
+}
+Bot.prototype = {
+	
+}
