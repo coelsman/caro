@@ -1,0 +1,19 @@
+.clearfix {
+	clear: both;
+	content: "";
+	display: block;
+}
+.tiktok {}
+.tiktok {}
+.tiktok {}
+.tiktok .tiktok_item {
+	float: left;
+	width: 30px; height: 30px;
+	border: 1px solid #7dd;
+	border-radius: 4px;
+}
+.tiktok .tiktok_item:hover {
+	background-color: #5ad;
+	cursor: pointer;
+}
+.tiktok .tiktok_item {}

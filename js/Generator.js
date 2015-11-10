@@ -1,6 +1,8 @@
 function Generator (objHtml) {
 	this.objectHtml = objHtml;
 	this.size = 30; // number of `cells` (instance of Cell object) in each row, each column
+
+	this.objectHtml.addClass('tiktok');
 }
 Generator.prototype = {
 
@@ -15,6 +17,8 @@ Generator.prototype = {
 			for (var j=0; j<this.size; j++) {
 				cells[i][j] = new Cell(this.objectHtml, i, j);
 			}
+
+			this.objectHtml.append('<div class="clearfix"></div>');
 		}
 
 		return cells;
