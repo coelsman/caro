@@ -4,24 +4,28 @@ set_time_limit(0);
 
 // when a client sends data to the server
 function wsOnMessage($clientID, $message, $messageLength, $binary) {
-	global $Server;
-	$ip = long2ip( $Server->wsClients[$clientID][6] );
 
-	// check if message length is 0
-	if ($messageLength == 0) {
-		$Server->wsClose($clientID);
-		return;
-	}
-	foreach ($Server->wsClients as $id => $client) {
-		// if ($id != $clientID) {
-			$Server->wsSend($id, $message);
-		// }
+	if ($clientID == 1 || $clientID == 2) {
+		global $Server;
+		$ip = long2ip( $Server->wsClients[$clientID][6] );
+
+		// check if message length is 0
+		if ($messageLength == 0) {
+			$Server->wsClose($clientID);
+			return;
+		}
+		$Server->log('Send message: '.$message);
+
+		foreach ($Server->wsClients as $id => $client) {
+			if ($id != $clientID) {
+				$Server->wsSend($id, $message);
+			}
+		}
 	}
 }
 
 // when a client connects
-function wsOnOpen($clientID)
-{
+function wsOnOpen($clientID) {
 	global $Server;
 	$ip = long2ip( $Server->wsClients[$clientID][6] );
 
@@ -50,6 +54,6 @@ $Server = new PHPWebSocket();
 $Server->bind('message', 'wsOnMessage');
 $Server->bind('open', 'wsOnOpen');
 $Server->bind('close', 'wsOnClose');
-$Server->wsStartServer('127.0.0.2', 9300);
+$Server->wsStartServer('localhost', 9300);
 
 ?>
