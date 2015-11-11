@@ -1,8 +1,79 @@
+body {
+	width: 1000px;
+	margin: auto;
+}
 .clearfix {
 	clear: both;
 	content: "";
 	display: block;
 }
+.hide {
+	display: none;
+}
+.col-4 {
+	width: 33.33333333333%;
+	float: left;
+}
+
+/*++++++++++++++++LAYOUT INDEX++++++++++++++++*/
+.wrap_table {
+	float: left;
+	width: 75%;
+	margin-right: 5%;
+	padding: 12px;
+	background-color: #ededff;
+}
+.wrap_online {
+	float: left;
+	width: 20%;
+}
+
+/*+++++++++++++++TABLE IN ROOM++++++++++++++++*/
+.r_table {
+	border: 1px solid #5abc97;
+	height: 80px;
+	margin: 12px;
+	border-top-left-radius: 6px;
+	border-top-right-radius: 6px;
+	position: relative;
+}
+.r_table {}
+.r_table .ico {
+	position: absolute;
+	width: 36px; height: 36px;
+	border-radius: 18px;
+	background: #ddd;
+	top: 20px;
+}
+.r_table .ico:hover {
+	border: 1px solid #888;
+	cursor: pointer;
+}
+.r_table .ico.ico_1 {
+	left: 45px;
+}
+.r_table .ico.online {
+	background: url(../images/icons/default_on.bmp);
+}
+.r_table .ico.offline {
+	background: url(../images/icons/default_off.bmp);
+}
+.r_table .ico.ico_2 {
+	position: absolute;
+	right: 20px;
+}
+.r_table .mark {
+	position: absolute;
+	width: 30px; height: 30px;
+	background-color: #65e;
+	color: #fff;
+	font-size: 20px;
+	line-height: 30px;
+	text-align: center;
+	bottom: 0px; left: 0px;
+}
+
+/*++++++++++++++++TIK TOK GAME++++++++++++++++*/
 .tiktok {}
 .tiktok {}
 .tiktok {}
