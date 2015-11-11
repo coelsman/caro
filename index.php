@@ -14,8 +14,8 @@
 <script type="text/javascript" src="js/Bot.js"></script>
 <script type="text/javascript">
 
-var generator = new Generator($('#tiktaktoe'));
-
+var generator = new Generator($('#tiktaktoe')),
+		game = new Game();
 generator.create();
 
 </script>
