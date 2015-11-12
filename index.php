@@ -8,7 +8,7 @@
 	<div class="wrap_table">
 		<?php for ($i=0; $i < 21; $i++) { ?>
 			<div class="col-4">
-				<div class="r_table">
+				<div class="r_table" data-table="<?php echo base64_encode(base64_encode($i)); ?>">
 					<div class="ico ico_1"></div>
 					<div class="ico ico_2"></div>
 					<div class="mark"><?php echo $i+1; ?></div>
@@ -31,7 +31,8 @@
 var wsUrl = 'ws://localhost:9300',
 		wsHandle = new WebSocket(wsUrl),
 		generator = new Generator($('#tiktaktoe')),
-		game = new Game();
+		game = new Game(),
+		cliend_id;
 
 // generator.create();
 
@@ -39,15 +40,40 @@ $('#tiktaktoe').on('click', '.tiktok_item', function () {
 	var col = parseInt($(this).attr('col')),
 			row = parseInt($(this).attr('row'));
 
-	wsHandle.send(JSON.stringify([row, col]));
+	wsHandle.send(JSON.stringify({
+		type: 'game',
+		data: {
+			col: col,
+			row: row
+		}
+	}));
 });
 
 wsHandle.onmessage = function (ev) {
-	console.log(ev);
 	var data = JSON.parse(ev.data);
-	console.log(data);
-	console.log($('.tiktok_item[col="'+data[0]+'"][col="'+data[1]+'"]'));
-	$('#tiktaktoe').find('.tiktok_item[row="'+data[0]+'"][col="'+data[1]+'"]').html('x');
+	
+	switch (data.type) {
+		case 'connect':
+			onConnect(data.data);
+			break;
+		case 'disconnect': 
+			onDisconnect(data.data);
+			break;
+		case 'game': 
+			onGame(data.data);
+			break;
+	}
+}
+
+function onGame (wsData) {
+	$('#tiktaktoe').find('.tiktok_item[row="'+wsData.row+'"][col="'+wsData.col+'"]').html('x');
+}
+function onConnect (wsData) {
+	$('.wrap_online').append('<div class="online_item" data-user="'+btoa(btoa(wsData.cliend_id))+'">'+'User _'+wsData.cliend_id+'</div>');
+	cliend_id = wsData.cliend_id;
+}
+function onDisconnect (wsData) {
+	$('.wrap_online').find('.online_item[data-user="'+btoa(btoa(wsData.cliend_id))+'"]').remove();
 }
 </script>
 </html>
