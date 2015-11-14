@@ -117,9 +117,15 @@ function onGame (wsData) {
 		$('#tiktaktoe').find('.tiktok_item[row="'+wsData.row+'"][col="'+wsData.col+'"]').html('x');
 }
 function onConnect (wsData) {
-	$('.wrap_online').append('<div class="online_item" data-user="'+btoa(btoa(wsData.client_id))+'">'+'User _'+wsData.client_id+'</div>');
 	if (typeof client_id == 'undefined')
 		client_id = wsData.client_id;
+
+	if (wsData.listOnline != null) {
+		wsData.listOnline.forEach(function (val, idx) {
+			$('.wrap_online').append('<div class="online_item" data-user="'+btoa(btoa(val))+'">'+'User _'+val+'</div>');
+		});
+	}
+
 	updateTableList();
 }
 function onDisconnect (wsData) {

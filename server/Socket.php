@@ -30,7 +30,7 @@ function wsOnMessage($clientID, $message, $messageLength, $binary) {
 // when a client connects
 function wsOnOpen($clientID) {
 	global $Server;
-$Server->log(dirname(dirname(__FILE__).'/jsons/online.json'));
+// $Server->log(dirname(dirname(__FILE__).'/jsons/online.json'));
 	$ip = long2ip( $Server->wsClients[$clientID][6] );
 
 	actionUserOnline($clientID);
@@ -38,8 +38,17 @@ $Server->log(dirname(dirname(__FILE__).'/jsons/online.json'));
 	$Server->log( "$ip ($clientID) has connected." );
 
 	//Send a join notice to everyone but the person who joined
-	foreach ( $Server->wsClients as $id => $client )
-			$Server->wsSend($id, json_encode(['type'=>'connect', 'data'=>['client_id'=>$clientID]]));
+	foreach ( $Server->wsClients as $id => $client)
+		if ($id == $clientID)
+			$Server->wsSend($id, json_encode(['type'=>'connect', 'data'=>[
+				'client_id' => $clientID,
+				'listOnline' => getListUserOnline(true)
+			]]));
+		else 
+			$Server->wsSend($id, json_encode(['type'=>'connect', 'data'=>[
+				'client_id' => $clientID,
+				'listOnline' => null
+			]]));
 }
 
 // when a client closes or lost connection
@@ -50,10 +59,10 @@ function wsOnClose($clientID, $status) {
 	actionUserOffline($clientID);
 	actionQuitTable($clientID);
 
-	$Server->log( "$ip ($clientID) has disconnected." );
+	$Server->log( "$ip ($clientID) has disconnected.");
 
 	//Send a user left notice to everyone in the room
-	foreach ( $Server->wsClients as $id => $client )
+	foreach ($Server->wsClients as $id => $client)
 		$Server->wsSend($id, json_encode(['type'=>'disconnect', 'data'=>['client_id'=>$clientID]]));
 }
 
@@ -78,7 +87,7 @@ function actionUserOnline ($client_id) {
 	$js = new Json(dirname(__FILE__).'/jsons/online.json');
 
 	$data = $js->getFileContent();
-	$data->$client_id = 'User _'.$client_id;
+	$data->$client_id = $client_id;
 	$js->setFileContent($data);
 }
 
@@ -132,5 +141,16 @@ function actionQuitTable ($client_id) {
 	}
 
 	$js->setFileContent($data);
+}
+
+function getListUserOnline ($isReturn = false) {
+	$js = new Json(dirname(__FILE__).'/jsons/online.json');
+	$data = $js->getFileContent();
+	$online = [];
+	foreach ($data as $key => $value) {
+		if ($value != null) $online[] = $value;
+	}
+	if ($isReturn) return $online;
+	else echo json_encode($online);
 }
 ?>
