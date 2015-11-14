@@ -56,6 +56,8 @@ var wsUrl = 'ws://localhost:9300',
 
 generator.create();
 
+$('#tiktaktoe .tiktok_item').addClass('x');
+
 $('#tiktaktoe').on('click', '.tiktok_item', function () {
 	var col = parseInt($(this).attr('col')),
 			row = parseInt($(this).attr('row'));
@@ -117,12 +119,14 @@ function onGame (wsData) {
 		$('#tiktaktoe').find('.tiktok_item[row="'+wsData.row+'"][col="'+wsData.col+'"]').html('x');
 }
 function onConnect (wsData) {
+	$('.wrap_online').append('<div class="online_item" data-user="'+btoa(btoa(wsData.client_id))+'">'+'User _'+wsData.client_id+'</div>');
 	if (typeof client_id == 'undefined')
 		client_id = wsData.client_id;
 
 	if (wsData.listOnline != null) {
 		wsData.listOnline.forEach(function (val, idx) {
-			$('.wrap_online').append('<div class="online_item" data-user="'+btoa(btoa(val))+'">'+'User _'+val+'</div>');
+			if (val != wsData.client_id)
+				$('.wrap_online').append('<div class="online_item" data-user="'+btoa(btoa(val))+'">'+'User _'+val+'</div>');
 		});
 	}
 
@@ -143,7 +147,7 @@ function onJoin (wsData) {
 					row.find('.name').html('Waiting player ...');
 				else {
 					if (js[i] == client_id)
-						row.find('.name').html('(You) User _'+client_id);
+						row.find('.name').html('(You) User _'+client_id).css('font-weight', 'bold');
 					else
 						row.find('.name').html('User _'+js[i]);
 				}

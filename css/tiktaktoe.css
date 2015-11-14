@@ -121,8 +121,10 @@ body {
 	border: 1px solid #7dd;
 	border-radius: 4px;
 }
-.tiktok .tiktok_item:hover {
-	background-color: #5ad;
-	cursor: pointer;
+.tiktok .tiktok_item.x {
+	cursor: url(../images/icons/tiktok_x.png), auto;
+}
+.tiktok .tiktok_item.o {
+	cursor: url(../images/icons/tiktok_o.png), auto;
 }
 .tiktok .tiktok_item {}
