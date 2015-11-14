@@ -5,6 +5,8 @@ class Json {
 	public function __construct ($file = '') {
 		if ($file != '') {
 			$this->file = $file;
+			error_log($this->file);
+			error_log(is_dir($this->file));
 		}
 	}
 

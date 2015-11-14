@@ -8,6 +8,7 @@ Generator.prototype = {
 
 	create: function () {
 		var cells = new Array(this.size);
+		this.objectHtml.append('<div class="wrap_tiktok"></div');
 
 		// loop rows
 		for (var i=0; i<this.size; i++) {
@@ -15,10 +16,10 @@ Generator.prototype = {
 
 			// loop column
 			for (var j=0; j<this.size; j++) {
-				cells[i][j] = new Cell(this.objectHtml, i, j);
+				cells[i][j] = new Cell(this.objectHtml.find('.wrap_tiktok'), i, j);
 			}
 
-			this.objectHtml.append('<div class="clearfix"></div>');
+			this.objectHtml.find('.wrap_tiktok').append('<div class="clearfix"></div>');
 		}
 
 		return cells;

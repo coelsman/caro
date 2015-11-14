@@ -30,6 +30,37 @@ body {
 	height: 300px;
 	overflow-y: auto;
 }
+#tiktaktoe {
+	float: left;
+	width: 65%;
+	margin-right: 3%;
+	overflow: auto;
+}
+.user_game {
+	float: left;
+	width: 32%;
+}
+.user_game .user_item {
+	border: 1px solid #8de;
+	margin-bottom: 20px;
+	border-radius: 8px;
+}
+.user_game .user_item .wrap_icon_name {
+	position: relative;
+}
+.user_game .user_item .wrap_icon_name .icon {
+	position: absolute;
+	top: 20px; left: 20px;
+}
+.user_game .user_item .wrap_icon_name .name {
+	margin-left: 50px;
+	line-height: 70px;
+	font-size: 24px;
+}
+.user_game .user_item .status {
+
+}
+.user_game {}
 
 /*+++++++++++++++TABLE IN ROOM++++++++++++++++*/
 .r_table {
@@ -79,7 +110,9 @@ body {
 /*++++++++++++++++TIK TOK GAME++++++++++++++++*/
 .tiktok {}
 .tiktok {}
-.tiktok {}
+.tiktok .wrap_tiktok {
+	width: 960px;
+}
 .tiktok .tiktok_item {
 	float: left;
 	width: 30px; height: 30px;
