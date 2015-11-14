@@ -52,7 +52,7 @@ var wsUrl = 'ws://localhost:9300',
 		wsHandle = new WebSocket(wsUrl),
 		generator = new Generator($('#tiktaktoe')),
 		game = new Game(),
-		client_id, _table;
+		client_id, _table, _isOnTable = false;
 
 generator.create();
 
@@ -64,12 +64,13 @@ $('#tiktaktoe').on('click', '.tiktok_item', function () {
 		type: 'game',
 		data: {
 			col: col,
-			row: row
+			row: row,
+			table: _table
 		}
 	}));
 });
 
-$('.wrap_table .ico').on('click', function () {
+$('.wrap_table').on('click', '.ico:not(.busy)', function () {
 	var row = $(this),
 			pos = row.attr('data-pos'),
 			data = {
@@ -83,6 +84,7 @@ $('.wrap_table .ico').on('click', function () {
 	}));
 
 	_table = data.table;
+	_isOnTable = true;
 
 	$('.wrap_table').addClass('hide');
 	$('.wrap_online').addClass('hide');
@@ -111,21 +113,24 @@ wsHandle.onmessage = function (ev) {
 }
 
 function onGame (wsData) {
-	$('#tiktaktoe').find('.tiktok_item[row="'+wsData.row+'"][col="'+wsData.col+'"]').html('x');
+	if (wsData.table == _table)
+		$('#tiktaktoe').find('.tiktok_item[row="'+wsData.row+'"][col="'+wsData.col+'"]').html('x');
 }
 function onConnect (wsData) {
 	$('.wrap_online').append('<div class="online_item" data-user="'+btoa(btoa(wsData.client_id))+'">'+'User _'+wsData.client_id+'</div>');
 	if (typeof client_id == 'undefined')
 		client_id = wsData.client_id;
+	updateTableList();
 }
 function onDisconnect (wsData) {
 	$('.wrap_online').find('.online_item[data-user="'+btoa(btoa(wsData.client_id))+'"]').remove();
+	updateTableList()
 }
 function onJoin (wsData) {
-	if (wsData.table == _table) {
-		getTableInfor(function (js) {
-			var pos, row;
+	getTableInfor(function (js) {
+		var pos, row;
 
+		if (_isOnTable == true && wsData.table == _table) {
 			for (var i in js) {
 				row = $('.user_game').find('.user_item[user-nth="'+i+'"]');
 				if (js[i] == null || typeof js[i] == 'undefined')
@@ -138,21 +143,30 @@ function onJoin (wsData) {
 				}
 			}
 			$('.wrap_table_no').html('Table No.'+wsData.table);
-
-		}, wsData.table);
-	}
+		} else {
+			for (var i in js) {
+				row = $('.wrap_table').find('.r_table[data-table="'+btoa(btoa(wsData.table))+'"]');
+				if (js[i] == parseInt(js[i]))
+					row.find('.ico[data-pos="'+i+'"]').addClass('busy').html('U_'+js[i]).css('background-color', '#0f0');
+			}
+		}
+	}, wsData.table);
 }
-/*
-function showTableInfor (client_id, pos, table) {
-	var oppPos = (pos == 1) ? 2 : 1;
-	var row = $('.user_game').find('.user_item[user-nth="'+pos+'"]');
-	var oppRow = $('.user_game').find('.user_item[user-nth="'+oppPos+'"]');
 
-	row.find('.name').html('(You) User _'+client_id);
-	oppRow.find('.name').html('Waiting player ...');
-
-	$('.wrap_table_no').html('Table No.'+table);
-}*/
+function updateTableList () {
+	var row;
+	getTableInfor(function (js) {
+		for (var i in js) {
+			row = $('.wrap_table').find('.r_table[data-table="'+btoa(btoa(i))+'"]')
+			for (var j in js[i]) {
+				if (js[i][j] == parseInt(js[i][j]))
+					row.find('.ico[data-pos="'+j+'"]').addClass('busy').html('U_'+js[i][j]).css('background-color', '#0f0');
+				else
+					row.find('.ico[data-pos="'+j+'"]').removeClass('busy').html('').css('background-color', '');
+			}
+		}
+	});
+}
 
 /*******************************************
 *                                          *
