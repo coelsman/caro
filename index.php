@@ -57,8 +57,8 @@ var wsUrl = 'ws://localhost:9300',
 		game = new Game(),
 		client_id, _table, _isOnTable = false;
 
-$('#tiktaktoe .tiktok_item').addClass('x');
-
+// generator.create();
+// $('#tiktaktoe .tiktok_item').addClass('x');
 $('#tiktaktoe').on('click', '.tiktok_item', function () {
 	var col = parseInt($(this).attr('col')),
 			row = parseInt($(this).attr('row'));
@@ -96,6 +96,16 @@ $('.wrap_table').on('click', '.ico:not(.busy)', function () {
 	readyScreen();
 });
 
+$('#ready').on('click', '.btn_play', function () {
+	wsHandle.send(JSON.stringify({
+		type: 'ready',
+		data: {
+			table: _table,
+			client_id: client_id
+		}
+	}));
+});
+
 wsHandle.onmessage = function (ev) {
 	var data = JSON.parse(ev.data);
 	
@@ -111,6 +121,9 @@ wsHandle.onmessage = function (ev) {
 			break;
 		case 'join':
 			onJoin(data.data);
+			break;
+		case 'ready':
+			onReady(data.data);
 			break;
 	}
 }
@@ -148,9 +161,9 @@ function onJoin (wsData) {
 					row.find('.name').html('Waiting player ...');
 				else {
 					if (js[i] == client_id)
-						row.find('.name').html('(You) User _'+client_id).css('font-weight', 'bold');
+						row.attr('cliend-id', btoa(btoa(js[i]))).find('.name').html('(You) User _'+client_id).css('font-weight', 'bold');
 					else
-						row.find('.name').html('User _'+js[i]);
+						row.attr('cliend-id', btoa(btoa(js[i]))).find('.name').html('User _'+js[i]);
 				}
 			}
 			$('.wrap_table_no').html('Table No.'+wsData.table);
@@ -162,6 +175,11 @@ function onJoin (wsData) {
 			}
 		}
 	}, wsData.table);
+}
+function onReady (wsData) {
+	if (_isOnTable == true && wsData.table == _table) {
+		$('.user_game').find('.user_item[cliend-id="'+btoa(btoa(wsData.client_id))+'"]')
+	}
 }
 
 function updateTableList () {
@@ -190,6 +208,10 @@ function readyScreen () {
 			'<div class="btn_quit">Quit Game!</div>'+
 		'</div>'+
 	'</div>')
+}
+
+function isBothReady () {
+
 }
 
 /*******************************************

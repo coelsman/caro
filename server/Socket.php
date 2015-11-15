@@ -13,6 +13,8 @@ function wsOnMessage($clientID, $message, $messageLength, $binary) {
 
 	if ($message->type == 'join') {
 		actionJoinGame($clientID, $message);
+	} else if ($message->type == 'ready') {
+		actionReadyGame($clientID, $message);
 	}
 
 	// check if message length is 0
@@ -118,6 +120,13 @@ function actionJoinGame ($client_id, $message) {
 
 	$data->$table->$pos = $client_id;
 	$js->setFileContent($data);
+}
+
+/**
+* Ready to playing
+*/
+function actionReadyGame ($client_id, $message) {
+
 }
 
 /**

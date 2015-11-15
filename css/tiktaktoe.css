@@ -97,6 +97,12 @@ body {
 #ready .btn_quit {
 	background-color: #a9d;
 }
+#ready .btn_play:hover {
+	background-color: #c89;
+}
+#ready .btn_quit:hover {
+	background-color: #98c;
+}
 
 /*+++++++++++++++TABLE IN ROOM++++++++++++++++*/
 .r_table {
@@ -158,9 +164,9 @@ body {
 	border-radius: 4px;
 }
 .tiktok .tiktok_item.x {
-	cursor: url(../images/icons/tiktok_x.png) 20 20, auto;
+	cursor: url(../images/icons/tiktok_x.png) , auto;
 }
 .tiktok .tiktok_item.o {
-	cursor: url(../images/icons/tiktok_o.png) 20 20, auto;
+	cursor: url(../images/icons/tiktok_o.png) , auto;
 }
 .tiktok .tiktok_item {}
