@@ -61,6 +61,42 @@ body {
 
 }
 .user_game {}
+#ready {
+	position: relative;
+	height: 500px; width: 65%;
+	float: left;
+	margin-right: 3%;
+	background-color: #eef;
+}
+#ready .wrap_ready_button {
+	position: absolute;
+	border: 1px solid #99d;
+	width: 300px; height: 120px;
+	left: 50%; top: 50%;
+	margin-left: -150px;
+	margin-top: -60px;
+}
+#ready .wrap_btn {
+	width: 50%;
+	position: relative;
+	/*padding: 2%;*/
+	float: left;
+}
+#ready .btn_play,
+#ready .btn_quit {
+	color: #fff;
+	font-size: 24px;
+	font-weight: bold;
+	line-height: 120px;
+	text-align: center;
+	cursor: pointer;
+}
+#ready .btn_play {
+	background-color: #d9a;
+}
+#ready .btn_quit {
+	background-color: #a9d;
+}
 
 /*+++++++++++++++TABLE IN ROOM++++++++++++++++*/
 .r_table {
@@ -122,9 +158,9 @@ body {
 	border-radius: 4px;
 }
 .tiktok .tiktok_item.x {
-	cursor: url(../images/icons/tiktok_x.png), auto;
+	cursor: url(../images/icons/tiktok_x.png) 20 20, auto;
 }
 .tiktok .tiktok_item.o {
-	cursor: url(../images/icons/tiktok_o.png), auto;
+	cursor: url(../images/icons/tiktok_o.png) 20 20, auto;
 }
 .tiktok .tiktok_item {}

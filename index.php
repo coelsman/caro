@@ -23,6 +23,9 @@
 
 	<!-- ______________________________________________________ -->
 	<div class="wrap_table_no"></div>
+	<div id="ready" class="hide">
+		
+	</div>
 	<div id="tiktaktoe" class="hide"></div>
 	<div class="user_game hide">
 		<div class="user_item" user-nth="1">
@@ -53,8 +56,6 @@ var wsUrl = 'ws://localhost:9300',
 		generator = new Generator($('#tiktaktoe')),
 		game = new Game(),
 		client_id, _table, _isOnTable = false;
-
-generator.create();
 
 $('#tiktaktoe .tiktok_item').addClass('x');
 
@@ -90,9 +91,9 @@ $('.wrap_table').on('click', '.ico:not(.busy)', function () {
 
 	$('.wrap_table').addClass('hide');
 	$('.wrap_online').addClass('hide');
-	$('#tiktaktoe').removeClass('hide');
+	// $('#tiktaktoe').removeClass('hide');
 	$('.user_game').removeClass('hide');
-	generator.create();
+	readyScreen();
 });
 
 wsHandle.onmessage = function (ev) {
@@ -176,6 +177,19 @@ function updateTableList () {
 			}
 		}
 	});
+}
+
+function readyScreen () {
+	console.info('Ready Screen');
+	var row = $('#ready').removeClass('hide');
+	row.append('<div class="wrap_ready_button">'+
+		'<div class="wrap_btn">'+
+			'<div class="btn_play">Ready</div>'+
+		'</div>'+
+		'<div class="wrap_btn">'+
+			'<div class="btn_quit">Quit Game!</div>'+
+		'</div>'+
+	'</div>')
 }
 
 /*******************************************
