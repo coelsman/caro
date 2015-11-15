@@ -94,10 +94,14 @@ body {
 #ready .btn_play {
 	background-color: #d9a;
 }
+#ready .btn_play.disable {
+	background-color: #ddd;
+	cursor: not-allowed;
+}
 #ready .btn_quit {
 	background-color: #a9d;
 }
-#ready .btn_play:hover {
+#ready .btn_play:not(.disable):hover {
 	background-color: #c89;
 }
 #ready .btn_quit:hover {
@@ -162,6 +166,14 @@ body {
 	width: 30px; height: 30px;
 	border: 1px solid #7dd;
 	border-radius: 4px;
+	background-position: 3px;
+	background-repeat: no-repeat;
+}
+.tiktok .tiktok_item.mx {
+	background-image: url(../images/icons/tiktok_x.png);
+}
+.tiktok .tiktok_item.mo {
+	background-image: url(../images/icons/tiktok_o.png);
 }
 .tiktok .tiktok_item.x {
 	cursor: url(../images/icons/tiktok_x.png) , auto;

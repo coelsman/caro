@@ -55,7 +55,10 @@ var wsUrl = 'ws://localhost:9300',
 		wsHandle = new WebSocket(wsUrl),
 		generator = new Generator($('#tiktaktoe')),
 		game = new Game(),
-		client_id, _table, _isOnTable = false;
+		_myReady = _oppReady = false,
+		opp_client_id,
+		client_id, _table, _isOnTable = false,
+		_typeShape;
 
 // generator.create();
 // $('#tiktaktoe .tiktok_item').addClass('x');
@@ -64,11 +67,12 @@ $('#tiktaktoe').on('click', '.tiktok_item', function () {
 			row = parseInt($(this).attr('row'));
 
 	wsHandle.send(JSON.stringify({
-		type: 'game',
+		type: 'mark',
 		data: {
 			col: col,
 			row: row,
-			table: _table
+			table: _table,
+			type: _typeShape
 		}
 	}));
 });
@@ -96,7 +100,7 @@ $('.wrap_table').on('click', '.ico:not(.busy)', function () {
 	readyScreen();
 });
 
-$('#ready').on('click', '.btn_play', function () {
+$('#ready').on('click', '.btn_play:not(.disable)', function () {
 	wsHandle.send(JSON.stringify({
 		type: 'ready',
 		data: {
@@ -116,8 +120,8 @@ wsHandle.onmessage = function (ev) {
 		case 'disconnect': 
 			onDisconnect(data.data);
 			break;
-		case 'game': 
-			onGame(data.data);
+		case 'mark': 
+			onMark(data.data);
 			break;
 		case 'join':
 			onJoin(data.data);
@@ -125,12 +129,15 @@ wsHandle.onmessage = function (ev) {
 		case 'ready':
 			onReady(data.data);
 			break;
+		case 'start':
+			onStart(data.data);
+			break;
 	}
 }
 
-function onGame (wsData) {
+function onMark (wsData) {
 	if (wsData.table == _table)
-		$('#tiktaktoe').find('.tiktok_item[row="'+wsData.row+'"][col="'+wsData.col+'"]').html('x');
+		$('#tiktaktoe').find('.tiktok_item[row="'+wsData.row+'"][col="'+wsData.col+'"]').addClass('m'+wsData.type);
 }
 function onConnect (wsData) {
 	$('.wrap_online').append('<div class="online_item" data-user="'+btoa(btoa(wsData.client_id))+'">'+'User _'+wsData.client_id+'</div>');
@@ -151,8 +158,9 @@ function onDisconnect (wsData) {
 	updateTableList()
 }
 function onJoin (wsData) {
+	console.info('On Join - Get Table Infor');
 	getTableInfor(function (js) {
-		var pos, row;
+		var pos, row, isOppJoined = false;
 
 		if (_isOnTable == true && wsData.table == _table) {
 			for (var i in js) {
@@ -162,11 +170,16 @@ function onJoin (wsData) {
 				else {
 					if (js[i] == client_id)
 						row.attr('cliend-id', btoa(btoa(js[i]))).find('.name').html('(You) User _'+client_id).css('font-weight', 'bold');
-					else
+					else {
+						isOppJoined = true;
 						row.attr('cliend-id', btoa(btoa(js[i]))).find('.name').html('User _'+js[i]);
+					}
 				}
 			}
 			$('.wrap_table_no').html('Table No.'+wsData.table);
+
+			if (isOppJoined)
+				$('#ready .btn_play').removeClass('disable');
 		} else {
 			for (var i in js) {
 				row = $('.wrap_table').find('.r_table[data-table="'+btoa(btoa(wsData.table))+'"]');
@@ -178,7 +191,39 @@ function onJoin (wsData) {
 }
 function onReady (wsData) {
 	if (_isOnTable == true && wsData.table == _table) {
-		$('.user_game').find('.user_item[cliend-id="'+btoa(btoa(wsData.client_id))+'"]')
+		if (wsData.client_id == client_id) {
+			_myReady = true;
+		} else {
+			opp_client_id = wsData.client_id;
+			_oppReady = true
+		}
+
+		$('.user_game').find('.user_item[cliend-id="'+btoa(btoa(wsData.client_id))+'"]').css('color', '#00f');
+
+		if (_myReady && _oppReady) {
+			var data = {};
+
+			generator.create();
+			$('#ready').addClass('hide');
+			$('#tiktaktoe').removeClass('hide');
+
+			data[opp_client_id] = randomShape();
+			data[client_id] = (data[opp_client_id] == 'x') ? 'o' : 'x';
+			data.table = _table;
+
+			wsHandle.send(JSON.stringify({
+				type: 'start',
+				data: data
+			}));
+		}
+	}
+}
+function onStart (wsData) {
+	if (_isOnTable == true && wsData.table == _table) {
+		_typeShape = wsData[client_id];
+
+		console.info('Start Game');
+		$('#tiktaktoe .tiktok_item').addClass(_typeShape);
 	}
 }
 
@@ -202,7 +247,7 @@ function readyScreen () {
 	var row = $('#ready').removeClass('hide');
 	row.append('<div class="wrap_ready_button">'+
 		'<div class="wrap_btn">'+
-			'<div class="btn_play">Ready</div>'+
+			'<div class="btn_play disable">Ready</div>'+
 		'</div>'+
 		'<div class="wrap_btn">'+
 			'<div class="btn_quit">Quit Game!</div>'+
@@ -210,8 +255,9 @@ function readyScreen () {
 	'</div>')
 }
 
-function isBothReady () {
-
+function randomShape () {
+	var r = ['x', 'o'];
+	return r[Math.floor(2 * Math.random())];
 }
 
 /*******************************************
