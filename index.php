@@ -55,6 +55,7 @@ var wsUrl = 'ws://192.168.1.102:9300',
 		ws = window.WebSocket || window.MozWebSocket,
 		wsHandle = new WebSocket(wsUrl),
 		generator = new Generator($('#tiktaktoe')),
+		executor = new Executor(),
 		game = new Game(),
 		_myReady = _oppReady = false,
 		opp_client_id,
@@ -147,6 +148,7 @@ function onMark (wsData) {
 		$('#tiktaktoe').find('.tiktok_item[row="'+wsData.row+'"][col="'+wsData.col+'"]').addClass('m'+wsData.type);
 		_cellsHandle[wsData.row][wsData.col].status = false;
 		_cellsHandle[wsData.row][wsData.col].type = wsData.type;
+		executor.checkIsHaveWinning(_cellsHandle, wsData.row, wsData.col);
 	}
 }
 function onConnect (wsData) {
