@@ -1,4 +1,5 @@
 <?php
+date_default_timezone_set('Asia/Saigon');
 require_once('PHPWebSocket.php');
 require_once('Json.php');
 set_time_limit(0);
@@ -73,7 +74,7 @@ $Server = new PHPWebSocket();
 $Server->bind('message', 'wsOnMessage');
 $Server->bind('open', 'wsOnOpen');
 $Server->bind('close', 'wsOnClose');
-$Server->wsStartServer('localhost', 9300);
+$Server->wsStartServer('192.168.1.102', 9300);
 
 /************************************************
 *                                               *

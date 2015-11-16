@@ -51,14 +51,15 @@
 <script type="text/javascript" src="js/Executor.js"></script>
 <script type="text/javascript" src="js/Bot.js"></script>
 <script type="text/javascript">
-var wsUrl = 'ws://localhost:9300',
+var wsUrl = 'ws://192.168.1.102:9300',
+		ws = window.WebSocket || window.MozWebSocket,
 		wsHandle = new WebSocket(wsUrl),
 		generator = new Generator($('#tiktaktoe')),
 		game = new Game(),
 		_myReady = _oppReady = false,
 		opp_client_id,
 		client_id, _table, _isOnTable = false,
-		_typeShape;
+		_typeShape, _cellsHandle;
 
 // generator.create();
 // $('#tiktaktoe .tiktok_item').addClass('x');
@@ -66,15 +67,20 @@ $('#tiktaktoe').on('click', '.tiktok_item', function () {
 	var col = parseInt($(this).attr('col')),
 			row = parseInt($(this).attr('row'));
 
-	wsHandle.send(JSON.stringify({
-		type: 'mark',
-		data: {
-			col: col,
-			row: row,
-			table: _table,
-			type: _typeShape
-		}
-	}));
+	if (_cellsHandle[row][col].status) {
+		console.log('This cell is totally clear');
+		wsHandle.send(JSON.stringify({
+			type: 'mark',
+			data: {
+				col: col,
+				row: row,
+				table: _table,
+				type: _typeShape
+			}
+		}));
+	}
+	else
+		console.error('Can not mark to marked cells');
 });
 
 $('.wrap_table').on('click', '.ico:not(.busy)', function () {
@@ -82,7 +88,8 @@ $('.wrap_table').on('click', '.ico:not(.busy)', function () {
 			pos = row.attr('data-pos'),
 			data = {
 				pos: parseInt(pos),
-				table: parseInt(atob(atob(row.parent().attr('data-table'))))
+				table: parseInt(atob(atob(row.parent().attr('data-table')))),
+				client_id: client_id
 			};
 
 	wsHandle.send(JSON.stringify({
@@ -136,8 +143,11 @@ wsHandle.onmessage = function (ev) {
 }
 
 function onMark (wsData) {
-	if (wsData.table == _table)
+	if (wsData.table == _table) {
 		$('#tiktaktoe').find('.tiktok_item[row="'+wsData.row+'"][col="'+wsData.col+'"]').addClass('m'+wsData.type);
+		_cellsHandle[wsData.row][wsData.col].status = false;
+		_cellsHandle[wsData.row][wsData.col].type = wsData.type;
+	}
 }
 function onConnect (wsData) {
 	$('.wrap_online').append('<div class="online_item" data-user="'+btoa(btoa(wsData.client_id))+'">'+'User _'+wsData.client_id+'</div>');
@@ -160,7 +170,7 @@ function onDisconnect (wsData) {
 function onJoin (wsData) {
 	console.info('On Join - Get Table Infor');
 	getTableInfor(function (js) {
-		var pos, row, isOppJoined = false;
+		var shape = ['', 'x', 'o'], row, isOppJoined = false;
 
 		if (_isOnTable == true && wsData.table == _table) {
 			for (var i in js) {
@@ -180,6 +190,9 @@ function onJoin (wsData) {
 
 			if (isOppJoined)
 				$('#ready .btn_play').removeClass('disable');
+
+			if (wsData.client_id == client_id)
+				_typeShape = shape[wsData.pos];
 		} else {
 			for (var i in js) {
 				row = $('.wrap_table').find('.r_table[data-table="'+btoa(btoa(wsData.table))+'"]');
@@ -203,12 +216,12 @@ function onReady (wsData) {
 		if (_myReady && _oppReady) {
 			var data = {};
 
-			generator.create();
 			$('#ready').addClass('hide');
 			$('#tiktaktoe').removeClass('hide');
 
-			data[opp_client_id] = randomShape();
-			data[client_id] = (data[opp_client_id] == 'x') ? 'o' : 'x';
+			_cellsHandle = generator.create();
+			/*data[opp_client_id] = randomShape();
+			data[client_id] = (data[opp_client_id] == 'x') ? 'o' : 'x';*/
 			data.table = _table;
 
 			wsHandle.send(JSON.stringify({
@@ -220,10 +233,11 @@ function onReady (wsData) {
 }
 function onStart (wsData) {
 	if (_isOnTable == true && wsData.table == _table) {
-		_typeShape = wsData[client_id];
+		// _typeShape = wsData[client_id];
 
 		console.info('Start Game');
 		$('#tiktaktoe .tiktok_item').addClass(_typeShape);
+		console.info(_cellsHandle);
 	}
 }
 

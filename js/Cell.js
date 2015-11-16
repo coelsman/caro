@@ -3,6 +3,8 @@ function Cell (objHtml, row, col) {
 	this.size = 30; // `width` and `height` of cell
 	this.row = row;
 	this.col = col;
+	this.status = true; // `true`: can mark, `false`: marked
+	this.type = ''; // `x` or `o`
 
 	this.draw();
 }
