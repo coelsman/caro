@@ -181,4 +181,7 @@ body {
 .tiktok .tiktok_item.o {
 	cursor: url(../images/icons/tiktok_o.png) , auto;
 }
+.tiktok .tiktok_item.just {
+	background-color: #fee;
+}
 .tiktok .tiktok_item {}

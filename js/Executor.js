@@ -4,8 +4,10 @@ function Executor () {
 Executor.prototype = {
 	checkIsHaveWinning: function (cells, nRow, nCol) {
 		var	type = cells[nRow][nCol].type;
-		console.log('@@@@@@@@@@@@@@@@@@@@@@@@@@@');
-		console.log(this.getLongestBy_TopLeft_BottomRight(cells, nRow, nCol, type));
+		return (this.getLongestBy_TopLeft_BottomRight(cells, nRow, nCol, type)
+			|| this.getLongestBy_BottomLeft_TopRight(cells, nRow, nCol, type)
+			|| this.getLongestBy_Top_Bottom(cells, nRow, nCol, type)
+			|| this.getLongestBy_Left_Right(cells, nRow, nCol, type));
 	},
 
 	getLongestBy_TopLeft_BottomRight: function (cells, nRow, nCol, type) {
@@ -21,8 +23,8 @@ Executor.prototype = {
 			ln++;
 			i++; j++;
 		}
-
-		return ln;
+console.log('TopLeft-BottomRight: '+ln);
+		return (ln == 5) ? true : false;
 	},
 
 	getLongestBy_BottomLeft_TopRight: function (cells, nRow, nCol, type) {
@@ -38,8 +40,8 @@ Executor.prototype = {
 			ln++;
 			i--; j++;
 		}
-
-		return ln;
+console.log('BottomLeft-TopRight: '+ln);
+		return (ln == 5) ? true : false;
 	},
 
 	getLongestBy_Top_Bottom: function (cells, nRow, nCol, type) {
@@ -55,8 +57,8 @@ Executor.prototype = {
 			ln++;
 			i++;
 		}
-
-		return ln;
+console.log('Top-Bottom: '+ln);
+		return (ln == 5) ? true : false;
 	},
 
 	getLongestBy_Left_Right: function (cells, nRow, nCol, type) {
@@ -72,7 +74,7 @@ Executor.prototype = {
 			ln++;
 			j++;
 		}
-
-		return ln;
+console.log('Left-Right: '+ln);
+		return (ln == 5) ? true : false;
 	},
 }

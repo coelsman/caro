@@ -59,7 +59,7 @@ var wsUrl = 'ws://192.168.1.102:9300',
 		game = new Game(),
 		_myReady = _oppReady = false,
 		opp_client_id,
-		client_id, _table, _isOnTable = false,
+		client_id, _table, _isOnTable = false, _isAllowMark = false,
 		_typeShape, _cellsHandle;
 
 // generator.create();
@@ -68,7 +68,7 @@ $('#tiktaktoe').on('click', '.tiktok_item', function () {
 	var col = parseInt($(this).attr('col')),
 			row = parseInt($(this).attr('row'));
 
-	if (_cellsHandle[row][col].status) {
+	if (_cellsHandle[row][col].status && _isAllowMark) {
 		console.log('This cell is totally clear');
 		wsHandle.send(JSON.stringify({
 			type: 'mark',
@@ -76,7 +76,9 @@ $('#tiktaktoe').on('click', '.tiktok_item', function () {
 				col: col,
 				row: row,
 				table: _table,
-				type: _typeShape
+				type: _typeShape,
+				nextTurn: opp_client_id,
+				client_id: client_id
 			}
 		}));
 	}
@@ -145,10 +147,18 @@ wsHandle.onmessage = function (ev) {
 
 function onMark (wsData) {
 	if (wsData.table == _table) {
-		$('#tiktaktoe').find('.tiktok_item[row="'+wsData.row+'"][col="'+wsData.col+'"]').addClass('m'+wsData.type);
+		$('#tiktaktoe .tiktok_item').removeClass('just');
+		$('#tiktaktoe').find('.tiktok_item[row="'+wsData.row+'"][col="'+wsData.col+'"]').addClass('m'+wsData.type+' just');
 		_cellsHandle[wsData.row][wsData.col].status = false;
 		_cellsHandle[wsData.row][wsData.col].type = wsData.type;
-		executor.checkIsHaveWinning(_cellsHandle, wsData.row, wsData.col);
+		if (executor.checkIsHaveWinning(_cellsHandle, wsData.row, wsData.col)) {
+			if (wsData.client_id == client_id) alert('YOU WIN');
+			else alert('YOU LOSE');
+		} else {
+			if (wsData.nextTurn == client_id) _isAllowMark = true;
+			else _isAllowMark = false;
+			console.info('Next turn');
+		}
 	}
 }
 function onConnect (wsData) {
@@ -222,8 +232,6 @@ function onReady (wsData) {
 			$('#tiktaktoe').removeClass('hide');
 
 			_cellsHandle = generator.create();
-			/*data[opp_client_id] = randomShape();
-			data[client_id] = (data[opp_client_id] == 'x') ? 'o' : 'x';*/
 			data.table = _table;
 
 			wsHandle.send(JSON.stringify({
@@ -235,11 +243,10 @@ function onReady (wsData) {
 }
 function onStart (wsData) {
 	if (_isOnTable == true && wsData.table == _table) {
-		// _typeShape = wsData[client_id];
-
 		console.info('Start Game');
+
+		_isAllowMark = (_typeShape == 'x') ? true : false;
 		$('#tiktaktoe .tiktok_item').addClass(_typeShape);
-		console.info(_cellsHandle);
 	}
 }
 
