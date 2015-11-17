@@ -1,3 +1,8 @@
+html, head, body, footer, header, table, td, tr, th, thead, tbody, tfoot, div, p, b, i, span, label, form, input, textarea, legend,
+fieldset {
+	padding: 0;
+	margin: 0;
+}
 body {
 	width: 1000px;
 	margin: auto;
@@ -13,6 +18,25 @@ body {
 .col-4 {
 	width: 33.33333333333%;
 	float: left;
+}
+
+/*+++++++++++++++LAYOUT CONFIRM+++++++++++++++*/
+body#confirm {
+	height: 100vh;
+}
+body#confirm .wrap_confirm {
+	height: 138px; width: 480px;
+	border: 1px solid #79c6ce;
+	padding: 20px;
+	margin: 40px auto;
+}
+body#confirm .wrap_confirm #txt-name {
+	width: 428px; height: 34px;
+	padding: 12px 24px;
+	margin-bottom: 16px;
+}
+body#confirm .wrap_confirm #btn-confirm {
+	width: 480px; height: 60px;
 }
 
 /*++++++++++++++++LAYOUT INDEX++++++++++++++++*/

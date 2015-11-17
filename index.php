@@ -51,6 +51,9 @@
 <script type="text/javascript" src="js/Executor.js"></script>
 <script type="text/javascript" src="js/Bot.js"></script>
 <script type="text/javascript">
+if (!checkNickname())
+	window.location.href = 'confirm.php';
+
 var wsUrl = 'ws://192.168.1.102:9300',
 		ws = window.WebSocket || window.MozWebSocket,
 		wsHandle = new WebSocket(wsUrl),
@@ -281,6 +284,20 @@ function readyScreen () {
 function randomShape () {
 	var r = ['x', 'o'];
 	return r[Math.floor(2 * Math.random())];
+}
+
+function checkNickname () {
+	var nick = localStorage.getItem('caro_nickname');
+	if (!nick) return false;
+	else {
+		try {
+			nick = atob(atob(nick));
+			return nick;
+		} catch (e) {
+			return false;
+			console.error(e);
+		}
+	}
 }
 
 /*******************************************
