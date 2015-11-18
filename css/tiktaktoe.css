@@ -20,6 +20,28 @@ body {
 	float: left;
 }
 
+/*++++++++++++++++++++MODAL+++++++++++++++++++*/
+.modal {
+	position: fixed;
+	top: 0px; left: 0px;
+}
+.modal .modal_backdrop {
+	z-index: 50;
+	width: 100vw; height: 100vh;
+	background-color: #333;
+	opacity: 0.7;
+}
+.modal .modal_content {
+	z-index: 51;
+	background-color: #fff;
+	padding: 30px;
+	width: 340px;
+	left: 50%; top: 120px;
+	margin-left: -200px;
+	position: absolute;
+}
+.modal {}
+
 /*+++++++++++++++LAYOUT CONFIRM+++++++++++++++*/
 body#confirm {
 	height: 100vh;
@@ -61,7 +83,32 @@ body#confirm .wrap_confirm #btn-confirm {
 	color: #66a;
 	border: 1px solid #99d;
 }
-.wrap_online {}
+#modal-nickname .modal_content {
+	top: 0px !important;
+}
+#modal-nickname .wrap_nickname {
+	border: 1px solid #ccf;
+	border-radius: 6px;
+	padding: 20px;
+	position: relative;
+}
+#modal-nickname .wrap_nickname input {
+	display: block;
+	width: 100%; height: 40px;
+}
+#modal-nickname .wrap_nickname #txt-nickname {
+	margin-bottom: 8px;
+}
+#modal-nickname .wrap_nickname #btn-save {
+	background-color: #66a;
+	color: #fff;
+	border: none;
+	font-size: 16px;
+}
+#modal-nickname .wrap_nickname #btn-save:hover {
+	cursor: pointer;
+	background-color: #77b;
+}
 #tiktaktoe {
 	float: left;
 	width: 65%;

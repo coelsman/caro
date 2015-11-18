@@ -19,6 +19,15 @@
 	<div class="wrap_online">
 		
 	</div>
+	<div class="modal" id="modal-nickname">
+		<div class="modal_backdrop"></div>
+		<div class="modal_content">
+			<div class="wrap_nickname">
+				<input type="text" value="" id="txt-nickname">
+				<input type="button" value="Save" id="btn-save">
+			</div>
+		</div>
+	</div>
 	<div class="clearfix"></div>
 
 	<!-- ______________________________________________________ -->
@@ -65,6 +74,11 @@ var wsUrl = 'ws://192.168.1.102:9300',
 		client_id, _table, _isOnTable = false, _isAllowMark = false,
 		_typeShape, _cellsHandle;
 
+/*****************************************************************
+*                                                                *
+*                      EVENTS OF HTML ELEMENTS                   *
+*                                                                *
+******************************************************************/
 // generator.create();
 // $('#tiktaktoe .tiktok_item').addClass('x');
 $('#tiktaktoe').on('click', '.tiktok_item', function () {
